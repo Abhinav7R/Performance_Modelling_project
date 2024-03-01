@@ -1,5 +1,11 @@
 import numpy as np
 
+class Job:
+    def __init__(self, arrival_time, service_time, priority):
+        self.arrival_time = arrival_time
+        self.service_time = service_time
+        self.priority = priority
+
 def generate_exponential_xi(n, lmbda):
     y = np.random.uniform(0, 1, n)
     x = [-np.log(1 - y[i]) / lmbda for i in range(len(y))]
@@ -7,59 +13,51 @@ def generate_exponential_xi(n, lmbda):
 
 def generate_si_sigma_xi(n):
     n_sorted = sorted(n)
-    si_signma_xi = []
+    si_sigma_xi = []
     for i in range(len(n_sorted)):
-        si_signma_xi.append(sum(n_sorted[:i+1]))
-    return si_signma_xi
+        si_sigma_xi.append(sum(n_sorted[:i+1]))
+    return si_sigma_xi
 
 def generate_sizes(si_sigma_xi, mu):
     sizes = generate_exponential_xi(len(si_sigma_xi), mu)
-    # print(sizes)
-    return [(si_sigma_xi[i], sizes[i]) for i in range(len(si_sigma_xi))]
+    jobs = []
+    for i in range(len(si_sigma_xi)):
+        jobs.append(Job(si_sigma_xi[i], sizes[i], None))
+    return jobs
 
-def assign_priority(arrival_times_and_sizes, number_of_queues, average_service_time):
+def assign_priority(jobsArray, number_of_queues, average_service_time):
     bin_size = 2 * average_service_time / number_of_queues
-    arrival_times_and_service_times_and_priority = []
-    for i in range(len(arrival_times_and_sizes)):
-        priority = int(arrival_times_and_sizes[i][1] / bin_size)
+    for job in jobsArray:
+        priority = int(job.service_time / bin_size)
         if priority >= number_of_queues:
             priority = number_of_queues - 1
-        arrival_times_and_service_times_and_priority.append((arrival_times_and_sizes[i][0], arrival_times_and_sizes[i][1], priority))
-    return arrival_times_and_service_times_and_priority
-
-def simulate_queue(arrival_times_and_priority):
-    pass
+        job.priority = priority
+    return jobsArray
 
 def main():
-    #number of jobs
+    # number of jobs
     n = 100
     number_of_queues = 4
     lmbda = 10
     mu = 0.2
 
-    xi= generate_exponential_xi(n, lmbda)
-    # print(xi)
-    #basically the arrival times of the jobs in the queue
+    xi = generate_exponential_xi(n, lmbda)
     si_sigma_xi = generate_si_sigma_xi(xi)
-    # print(si_sigma_xi)
 
-    #append random sizes to all the jobs in the queue
-    #list of tuples (arrival time, size)
-    #sizes are between 1 and 10
-    arrival_times_and_sizes = generate_sizes(si_sigma_xi, mu)
-    # print(arrival_times_and_sizes)
-    #Note service time is same as sizes
-    arrival_times_and_service_times_and_priority = assign_priority(arrival_times_and_sizes, number_of_queues, 1/mu)
-    # print(arrival_times_and_service_times_and_priority)    
+    jobsArray = generate_sizes(si_sigma_xi, mu)
 
-    #count number of jobs in each queue
-    count = [0,0,0,0]
-    for i in range(len(arrival_times_and_service_times_and_priority)):
-        count[arrival_times_and_service_times_and_priority[i][2]] += 1
-    print(count)
+    jobsArray = assign_priority(jobsArray, number_of_queues, 1/mu)
 
-    #simulate the queue with the given arrival times and sizes using sjf
-    # simulate_queue(arrival_times_and_service_times_and_priority)
+    # Count number of jobs in each queue
+    count = [0] * number_of_queues
+    for job in jobsArray:
+        count[job.priority] += 1
+    print("Counts per priority:", count)
+    
+    print("Jobs:")
+    for job in jobsArray:
+        print("Arrival Time:", job.arrival_time, "Service Time:", job.service_time, "Priority:", job.priority)
+
 
 if __name__ == "__main__":
     main()
