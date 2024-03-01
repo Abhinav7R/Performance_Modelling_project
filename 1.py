@@ -57,11 +57,9 @@ def getHighestPriorityJob(jobsArray,global_clock):
 def getNextJobArrival(jobsArray):
     index = -1
     for i, job in enumerate(jobsArray):
-        print(job.isJobDone)
         if job.isJobDone == False:
             return i 
             
-
 def simulate_queue(jobsArray,numJobs):
     global_clock = 0
     numJobsdone = 0
@@ -79,7 +77,6 @@ def simulate_queue(jobsArray,numJobs):
         global_clock += currJob.service_time  
         jobsArray[highest_priority_job_index].isJobDone = True 
         numJobsdone += 1 
-
 
 def main():
     # number of jobs
