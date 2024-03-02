@@ -60,11 +60,3 @@ One can follow the following steps to simulate these results
 4. Run all the cells in both the `jupyter notebooks`, that is, `non_premptive.ipynb` and `preemptive.ipynb`.
 
 One can change parameters like `service rate`, `number of queues`, `number of jobs`, etc, easily by changing the constants field which are defined at the beggining of the code in `generate_data.py`
-
-### Team Members
-
-    1. M S S Sriharsha (2022101041)
-    2. Abhinav Raundhal (2022101089)
-    3. Archisha Panda (2022111019)
-    4. Yash Shinde (2022111009)
-    5. Aanvik Bhatnagar (2022101103)
