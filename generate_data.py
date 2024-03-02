@@ -1,7 +1,7 @@
 import numpy as np
 
 # number of jobs
-n = 10000
+n = 100
 number_of_queues = 4
 lmbda = 0.1
 mu = 0.2
